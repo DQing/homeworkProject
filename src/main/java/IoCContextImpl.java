@@ -37,9 +37,11 @@ public class IoCContextImpl<T> implements IoCContext {
         try {
             beanClazz.newInstance();
         } catch (InstantiationException e) {
-            throw new IllegalArgumentException(beanClazz.getName() + "is abstract");
+            throw new IllegalArgumentException(beanClazz.getName() + " is abstract");
         } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(beanClazz.getName() + "has no default constructor");
+            throw new IllegalArgumentException(beanClazz.getName() + " has no default constructor");
+        }catch (Exception e){
+            throw new IllegalArgumentException(beanClazz.getName() + " is abstract");
         }
         if (classList.contains(beanClazz)) {
             return;
