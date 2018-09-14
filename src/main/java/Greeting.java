@@ -1,4 +1,6 @@
-package PACKAGE_NAME;
 
-public class Greeting {
+class Greeting {
+    String greeting() {
+        return "Hello World!";
+    }
 }
