@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class IoCContextImpl<T> implements IoCContext {
     List<Class<?>> classList = new ArrayList<>();
@@ -38,7 +37,6 @@ public class IoCContextImpl<T> implements IoCContext {
         if (resolveClazz==null||beanClazz == null) {
             throw new IllegalArgumentException("beanClazz is mandatory");
         }
-        baseClassException(resolveClazz);
         superClassException(beanClazz);
         baseClass.forEach((key,value) -> {
             if (key.equals(resolveClazz.getSimpleName())){
@@ -56,17 +54,6 @@ public class IoCContextImpl<T> implements IoCContext {
             throw new IllegalArgumentException(beanClazz.getName() + " has no default constructor");
         }
     }
-
-    private <T> void baseClassException(Class<T> resolveClazz) {
-        try {
-            resolveClazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException(resolveClazz.getName() + " is abstract");
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(resolveClazz.getName() + " has no default constructor");
-        }
-    }
-
 
     private void getBeanIllegalState(Class<?> resolveClazz) {
         if (resolveClazz == null) {

@@ -10,8 +10,13 @@ class IoCContextExtendTest {
         IoCContextImpl<Student> context = new IoCContextImpl<>();
         context.registerBean(Person.class, Student.class);
         Person person = context.getBean(Person.class);
-        Student student = context.getBean(Student.class);
         assertEquals(Person.class,person.getClass());
+    }
+    @Test
+    void should_get_correct_object_when_have_interface() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
+        context.registerBean(Action.class, Student.class);
+        Student student = context.getBean(Student.class);
         assertEquals(Student.class,student.getClass());
     }
 
