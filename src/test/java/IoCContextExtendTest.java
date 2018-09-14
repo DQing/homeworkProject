@@ -1,4 +1,8 @@
-package PACKAGE_NAME;
+import org.junit.jupiter.api.Test;
 
-public class IoCContextExtendText {
+class IoCContextExtendTest {
+    @Test
+    void should_override() {
+
+    }
 }

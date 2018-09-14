@@ -21,6 +21,17 @@ public class IoCContextImpl<T> implements IoCContext {
         return resolveClazz.newInstance();
     }
 
+    @Override
+    public <T> void registerBean(Class<? super T> resolveClazz, Class<T> beanClazz) {
+        if (isCanRegister) {
+            throw new IllegalStateException();
+        }
+        illegalState(resolveClazz);
+        illegalState(beanClazz);
+        classList.add(resolveClazz);
+        classList.add(beanClazz);
+    }
+
     private void getBeanIllegalState(Class<?> resolveClazz) {
         if (resolveClazz == null) {
             throw new IllegalArgumentException();
