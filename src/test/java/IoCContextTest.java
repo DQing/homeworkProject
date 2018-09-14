@@ -51,4 +51,14 @@ class IoCContextTest {
             context.getBean(MyBean.class);
         });
     }
+
+    @Test
+    void should_not_register_after_getBean() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        context.getBean(MyBean.class);
+        assertThrows(IllegalStateException.class,()->{
+            context.registerBean(MyBean.class);
+        });
+    }
 }
