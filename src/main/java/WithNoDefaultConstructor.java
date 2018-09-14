@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
 public class WithNoDefaultConstructor {
+    public WithNoDefaultConstructor(String string) {
+    }
 }

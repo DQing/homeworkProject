@@ -27,5 +27,13 @@ class IoCContextTest {
             context.registerBean(MyInterface.class);
         });
     }
-    
+
+    @Test
+    void should_throw_exception_if_not_have_default_constroctor() {
+        IoCContextImpl<WithNoDefaultConstructor> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class,()->{
+            context.registerBean(WithNoDefaultConstructor.class);
+        });
+    }
+
 }
