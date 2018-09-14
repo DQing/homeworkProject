@@ -14,14 +14,18 @@ class IoCContextTest {
 
     @Test
     void should_throw_exception_if_null() {
-        IoCContextImpl<MyBean> context = new IoCContextImpl();
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
         assertThrows(IllegalArgumentException.class,()->{
             context.registerBean(null);
         } );
     }
 
     @Test
-    void should_() {
-
+    void should_throw_exception_if_not_can_be_instance() {
+        IoCContextImpl<MyInterface> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class,()->{
+            context.registerBean(MyInterface.class);
+        });
     }
+    
 }
