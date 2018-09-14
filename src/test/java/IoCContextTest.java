@@ -1,3 +1,4 @@
+import Entity.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +14,7 @@ class IoCContextTest {
     @Test
     void should_throw_exception_if_not_can_be_instance() {
         IoCContextImpl<FunctionalInterface> context = new IoCContextImpl<>();
-        assertThrows(IllegalArgumentException.class,() -> context.registerBean(FunctionalInterface.class),MyInterface.class.getSimpleName()+" is abstract");
+        assertThrows(IllegalArgumentException.class,() -> context.registerBean(FunctionalInterface.class), MyInterface.class.getSimpleName()+" is abstract");
     }
 
     @Test
