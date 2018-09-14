@@ -44,4 +44,11 @@ class IoCContextTest {
         });
     }
 
+    @Test
+    void should_throw_exception_if_not_register() {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        assertThrows(IllegalStateException.class,()->{
+            context.getBean(MyBean.class);
+        });
+    }
 }
