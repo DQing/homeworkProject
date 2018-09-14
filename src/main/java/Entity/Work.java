@@ -1,4 +1,4 @@
 package Entity;
 
-public class Work {
+public class Work extends Person {
 }

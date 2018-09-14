@@ -1,6 +1,6 @@
 package Entity;
 
-public class WithNoDefaultConstructor {
+public class WithNoDefaultConstructor extends Person{
     public WithNoDefaultConstructor(String string) {
     }
 }

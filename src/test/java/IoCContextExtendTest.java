@@ -1,8 +1,61 @@
+import Entity.*;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IoCContextExtendTest {
     @Test
-    void should_override() {
-
+    void should_get_correct_object() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
+        context.registerBean(Person.class, Student.class);
+        Person person = context.getBean(Person.class);
+        Student student = context.getBean(Student.class);
+        assertEquals(Person.class,person.getClass());
+        assertEquals(Student.class,student.getClass());
     }
+
+    @Test
+    void should_throw_exception_when_input_null() {
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class, () -> context.registerBean(null, null),"beanClazz is mandatory");
+        assertThrows(IllegalArgumentException.class, () -> context.registerBean(Person.class, null),"beanClazz is mandatory");
+        assertThrows(IllegalArgumentException.class, () -> context.registerBean(null, Student.class),"beanClazz is mandatory");
+    }
+
+    @Test
+    void should_override() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
+        context.registerBean(Person.class, Student.class);
+        context.registerBean(Person.class, Work.class);
+
+        Work work = context.getBean(Work.class);
+        assertEquals(Work.class,work.getClass());
+    }
+
+    @Test
+    void should_throw_exception_if_not_can_be_instance() {
+        IoCContextImpl<FunctionalInterface> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class,() -> context.registerBean(FunctionalInterface.class,FunctionalInterface.class), FunctionalInterface.class.getSimpleName()+" is abstract");
+    }
+
+    @Test
+    void should_throw_exception_if_not_have_default_constructor() {
+        IoCContextImpl<WithNoDefaultConstructor> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class,() -> context.registerBean(Person.class,WithNoDefaultConstructor.class),WithNoDefaultConstructor.class.getSimpleName()+" has no default constructor");
+    }
+    @Test
+    void should_throw_exception_if_not_register() {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        assertThrows(IllegalStateException.class,() -> context.getBean(MyBean.class));
+    }
+
+    @Test
+    void should_not_register_after_getBean() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        context.registerBean(Person.class,Student.class);
+        context.getBean(Person.class);
+        assertThrows(IllegalStateException.class,() -> context.registerBean(Person.class,Student.class));
+    }
+
 }
