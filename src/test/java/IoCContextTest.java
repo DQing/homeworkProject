@@ -36,4 +36,12 @@ class IoCContextTest {
         });
     }
 
+    @Test
+    void should_throw_exception_if_resolveClazz_is_null() {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        assertThrows(IllegalArgumentException.class,()->{
+            context.getBean(null);
+        });
+    }
+
 }
