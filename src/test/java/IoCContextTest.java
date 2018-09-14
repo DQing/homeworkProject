@@ -5,14 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IoCContextTest {
     @Test
-    void should_register_bean_correct() throws InstantiationException, IllegalAccessException {
-        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
-        context.registerBean(MyBean.class);
-        MyBean myBean = context.getBean(MyBean.class);
-        assertEquals(myBean.getClass(), MyBean.class);
-    }
-
-    @Test
     void should_throw_exception_if_null() {
         IoCContextImpl<MyBean> context = new IoCContextImpl<>();
         assertThrows(IllegalArgumentException.class,() -> context.registerBean(null),"beanClazz is mandatory");
@@ -49,4 +41,46 @@ class IoCContextTest {
         context.getBean(MyBean.class);
         assertThrows(IllegalStateException.class,() -> context.registerBean(MyBean.class));
     }
+
+    @Test
+    void should_throw_exception_if_getBean() {
+        IoCContextImpl<MyBeanWithError> context = new IoCContextImpl<>();
+        assertThrows(ArithmeticException.class, ()->context.registerBean(MyBeanWithError.class));
+    }
+    @Test
+    void should_register_bean_correct() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        MyBean myBean = context.getBean(MyBean.class);
+        assertEquals(myBean.getClass(), MyBean.class);
+    }
+
+    @Test
+    void should_register_2_get_1() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<?> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        context.registerBean(Student.class);
+        MyBean myBean = context.getBean(MyBean.class);
+        assertEquals(myBean.getClass(), MyBean.class);
+    }
+    @Test
+    void should_register_2_get_2() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<?> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        context.registerBean(Student.class);
+        MyBean myBean = context.getBean(MyBean.class);
+        Student student = context.getBean(Student.class);
+        assertEquals(myBean.getClass(), MyBean.class);
+        assertEquals(Student.class, student.getClass());
+    }
+
+     @Test
+    void should_register_2_get_anyone() throws InstantiationException, IllegalAccessException {
+        IoCContextImpl<?> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        context.registerBean(Student.class);
+        Student student = context.getBean(Student.class);
+        assertEquals(Student.class, student.getClass());
+    }
+
 }

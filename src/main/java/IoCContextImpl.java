@@ -3,11 +3,11 @@ import java.util.List;
 
 public class IoCContextImpl<T> implements IoCContext {
     List<Class<?>> classList = new ArrayList<>();
-    boolean isThrow = false;
+    boolean isCanRegister = false;
 
     @Override
     public void registerBean(Class<?> beanClazz) {
-        if (isThrow) {
+        if (isCanRegister) {
             throw new IllegalStateException();
         }
         illegalState(beanClazz);
@@ -15,8 +15,8 @@ public class IoCContextImpl<T> implements IoCContext {
     }
 
     @Override
-    public <T> T getBean(Class<T> resolveClazz) throws IllegalAccessException, InstantiationException {
-        isThrow = true;
+    public <T> T getBean(Class<T> resolveClazz) throws IllegalAccessException, InstantiationException{
+        isCanRegister = true;
         getBeanIllegalState(resolveClazz);
         return resolveClazz.newInstance();
     }
@@ -40,8 +40,6 @@ public class IoCContextImpl<T> implements IoCContext {
             throw new IllegalArgumentException(beanClazz.getName() + " is abstract");
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(beanClazz.getName() + " has no default constructor");
-        }catch (Exception e){
-            throw new IllegalArgumentException(beanClazz.getName() + " is abstract");
         }
         if (classList.contains(beanClazz)) {
             return;
