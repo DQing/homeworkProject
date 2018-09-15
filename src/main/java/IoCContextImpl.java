@@ -1,10 +1,7 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class IoCContextImpl<T> implements IoCContext {
-    List<Class<?>> classList = new ArrayList<>();
-    HashMap<String,String> baseClass = new HashMap<>();
+public class IoCContextImpl implements IoCContext {
+    HashMap<Class,Class> classList = new HashMap<>();
     boolean isCanRegister = false;
 
     @Override
@@ -12,37 +9,34 @@ public class IoCContextImpl<T> implements IoCContext {
         if (isCanRegister) {
             throw new IllegalStateException();
         }
-        illegalState(beanClazz);
-        classList.add(beanClazz);
+        registerBeanIllegalState(beanClazz);
+        classList.put(beanClazz, beanClazz);
     }
-
-    @Override
-    public <T> T getBean(Class<T> resolveClazz) throws IllegalAccessException, InstantiationException{
-        isCanRegister = true;
-        getBeanIllegalState(resolveClazz);
-        return resolveClazz.newInstance();
-    }
-
     @Override
     public <T> void registerBean(Class<? super T> resolveClazz, Class<T> beanClazz) {
         if (isCanRegister) {
             throw new IllegalStateException();
         }
         withParameterIllegalState(resolveClazz,beanClazz);
-        classList.add(resolveClazz);
-        classList.add(beanClazz);
+        classList.put(resolveClazz,beanClazz);
+    }
+
+    @Override
+    public <T> T getBean(Class<T> resolveClazz) throws IllegalAccessException, InstantiationException{
+        isCanRegister = true;
+        getBeanIllegalState(resolveClazz);
+        if (classList.containsKey(resolveClazz)){
+            return (T) classList.get(resolveClazz).newInstance();
+        }
+        return resolveClazz.newInstance();
     }
 
     private <T> void withParameterIllegalState(Class<? super T> resolveClazz, Class<T> beanClazz) {
-        if (resolveClazz==null||beanClazz == null) {
+        if (resolveClazz==null || beanClazz == null) {
             throw new IllegalArgumentException("beanClazz is mandatory");
         }
         superClassException(beanClazz);
-        baseClass.forEach((key,value) -> {
-            if (key.equals(resolveClazz.getSimpleName())){
-                baseClass.put(resolveClazz.getSimpleName(), beanClazz.getSimpleName());
-            }
-        });
+        classList.forEach((key, value) -> classList.put(resolveClazz, beanClazz));
     }
 
     private <T> void superClassException(Class<? super T> beanClazz) {
@@ -59,12 +53,12 @@ public class IoCContextImpl<T> implements IoCContext {
         if (resolveClazz == null) {
             throw new IllegalArgumentException();
         }
-        if (!classList.contains(resolveClazz)) {
+        if (!classList.containsKey(resolveClazz) && !classList.containsValue(resolveClazz)) {
             throw new IllegalStateException();
         }
     }
 
-    private void illegalState(Class<?> beanClazz) {
+    private void registerBeanIllegalState(Class<?> beanClazz) {
         if (beanClazz == null) {
             throw new IllegalArgumentException("beanClazz is mandatory");
         }
@@ -75,7 +69,7 @@ public class IoCContextImpl<T> implements IoCContext {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException(beanClazz.getName() + " has no default constructor");
         }
-        if (classList.contains(beanClazz)) {
+        if (classList.containsKey(beanClazz)) {
             return;
         }
     }
