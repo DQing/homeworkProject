@@ -1,6 +1,8 @@
 import Annotation.CreateOnTheFly;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Stream;
@@ -94,5 +96,18 @@ public class IoCContextImpl<T> implements IoCContext {
         if (classList.containsKey(beanClazz)) {
             return;
         }
+    }
+
+    @Override
+    public void close() {
+        classList.forEach((key,value)->{
+            try {
+                Method close = value.getMethod("close");
+                close.setAccessible(true);
+                Object invoke = close.invoke(value.newInstance());
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                throw new IllegalStateException();
+            }
+        });
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class IoCContextExtendTest {
     @Test
@@ -129,5 +130,16 @@ class IoCContextExtendTest {
         context.registerBean(Animal.class);
         context.registerBean(Cat.class);
         assertThrows(IllegalStateException.class, () -> context.getBean(Cat.class));
+    }
+    //6 test
+
+    @Test
+    void should_close_bean_when_IcoContext_close() {
+        IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
+        context.registerBean(AutoCloseBean.class);
+        ClosableStateReference closableStateReference = new ClosableStateReference(false);
+        AutoCloseBean autoCloseBean = new AutoCloseBean(closableStateReference);
+        context.close();
+        assertTrue(autoCloseBean.isClosed());
     }
 }
