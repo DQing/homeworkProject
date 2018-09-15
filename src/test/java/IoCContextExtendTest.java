@@ -14,7 +14,7 @@ class IoCContextExtendTest {
     }
     @Test
     void should_get_student_when_get_student() throws InstantiationException, IllegalAccessException {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
         context.registerBean(Person.class, Student.class);
         Student student = context.getBean(Student.class);
         assertEquals(Student.class,student.getClass());
@@ -28,7 +28,7 @@ class IoCContextExtendTest {
     }
     @Test
     void should_get_correct_object_when_have_interface() throws InstantiationException, IllegalAccessException {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
         context.registerBean(Action.class, Student.class);
         Student student = context.getBean(Student.class);
         assertEquals(Student.class,student.getClass());
@@ -44,7 +44,7 @@ class IoCContextExtendTest {
 
     @Test
     void should_override() throws InstantiationException, IllegalAccessException {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
         context.registerBean(Person.class, Student.class);
         context.registerBean(Person.class, Work.class);
 
@@ -60,21 +60,26 @@ class IoCContextExtendTest {
 
     @Test
     void should_throw_exception_if_not_have_default_constructor() {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<WithNoDefaultConstructor> context = new IoCContextImpl<>();
         assertThrows(IllegalArgumentException.class,() -> context.registerBean(Person.class,WithNoDefaultConstructor.class),WithNoDefaultConstructor.class.getSimpleName()+" has no default constructor");
     }
     @Test
     void should_throw_exception_if_not_register() {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
         assertThrows(IllegalStateException.class,() -> context.getBean(MyBean.class));
     }
 
     @Test
     void should_not_register_after_getBean() throws InstantiationException, IllegalAccessException {
-        IoCContextImpl context = new IoCContextImpl();
+        IoCContextImpl<Student> context = new IoCContextImpl<>();
         context.registerBean(Person.class,Student.class);
         context.getBean(Person.class);
         assertThrows(IllegalStateException.class,() -> context.registerBean(Person.class,Student.class));
     }
+    //4 test
 
+    @Test
+    void should_throw_exception_when_dependency_not_instance() {
+        IoCContextImpl<MyBean> context = new IoCContextImpl();
+    }
 }
