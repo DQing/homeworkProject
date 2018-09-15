@@ -1,7 +1,9 @@
 import Annotation.CreateOnTheFly;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 public class IoCContextImpl<T> implements IoCContext {
     HashMap<Class,Class> classList = new HashMap<>();
@@ -35,8 +37,8 @@ public class IoCContextImpl<T> implements IoCContext {
     }
 
     private <T> T beanInstance(Class bean) throws IllegalAccessException, InstantiationException {
-        Arrays.stream(bean.getFields())
-                .filter(field -> field.getAnnotation(CreateOnTheFly.class) != null)
+        Stream<Field> totalDependency = Stream.concat(Arrays.stream(bean.getFields()),  Arrays.stream(bean.getSuperclass().getFields()));
+          totalDependency.filter(field -> field.getAnnotation(CreateOnTheFly.class) != null)
                 .map(field -> {
                     try {
                         if (classList.containsKey(field.getType())){

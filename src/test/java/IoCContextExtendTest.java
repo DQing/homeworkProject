@@ -1,4 +1,6 @@
 import Entity.*;
+import Entity.Test5Case.Animal;
+import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,5 +93,41 @@ class IoCContextExtendTest {
         IoCContextImpl<MyBean> context = new IoCContextImpl<>();
         context.registerBean(MyBean.class);
         assertThrows(IllegalStateException.class, () -> context.getBean(MyBean.class));
+    }
+
+    // 5 test
+
+    @Test
+    void should_get_correct_bean_with_inherit() throws IllegalAccessException, InstantiationException {
+        IoCContextImpl<Cat> context = new IoCContextImpl<>();
+        context.registerBean(Animal.class);
+        context.registerBean(Cat.class);
+        context.registerBean(MyBaseDependency.class);
+        context.registerBean(MyDependency.class);
+        Cat cat = context.getBean(Cat.class);
+        assertEquals(Cat.class,cat.getClass());
+    }
+    @Test
+    void should_throw_exception_when_not_instance_inherit_dependency() {
+        IoCContextImpl<Cat> context = new IoCContextImpl<>();
+        context.registerBean(Animal.class);
+        context.registerBean(Cat.class);
+        context.registerBean(MyDependency.class);
+        assertThrows(IllegalStateException.class, () -> context.getBean(Cat.class));
+    }
+    @Test
+    void should_throw_exception_when_not_instance_bean_dependency() {
+        IoCContextImpl<Cat> context = new IoCContextImpl<>();
+        context.registerBean(Animal.class);
+        context.registerBean(Cat.class);
+        context.registerBean(MyBaseDependency.class);
+        assertThrows(IllegalStateException.class, () -> context.getBean(Cat.class));
+    }
+    @Test
+    void should_throw_exception_when_not_instance_dependency() {
+        IoCContextImpl<Cat> context = new IoCContextImpl<>();
+        context.registerBean(Animal.class);
+        context.registerBean(Cat.class);
+        assertThrows(IllegalStateException.class, () -> context.getBean(Cat.class));
     }
 }
