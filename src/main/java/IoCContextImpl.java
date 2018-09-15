@@ -1,6 +1,9 @@
+import Annotation.CreateOnTheFly;
+
+import java.util.Arrays;
 import java.util.HashMap;
 
-public class IoCContextImpl implements IoCContext {
+public class IoCContextImpl<T> implements IoCContext {
     HashMap<Class,Class> classList = new HashMap<>();
     boolean isCanRegister = false;
 
@@ -22,13 +25,30 @@ public class IoCContextImpl implements IoCContext {
     }
 
     @Override
-    public <T> T getBean(Class<T> resolveClazz) throws IllegalAccessException, InstantiationException{
+    public <T> T getBean(Class<T> resolveClazz) throws InstantiationException, IllegalAccessException {
         isCanRegister = true;
         getBeanIllegalState(resolveClazz);
         if (classList.containsKey(resolveClazz)){
-            return (T) classList.get(resolveClazz).newInstance();
+            return beanInstance(classList.get(resolveClazz));
         }
-        return resolveClazz.newInstance();
+        return beanInstance(resolveClazz);
+    }
+
+    private <T> T beanInstance(Class bean) throws IllegalAccessException, InstantiationException {
+        Arrays.stream(bean.getFields())
+                .filter(field -> field.getAnnotation(CreateOnTheFly.class) != null)
+                .map(field -> {
+                    try {
+                        if (classList.containsKey(field.getType())){
+                            return bean.newInstance();
+                        }else {
+                            throw new IllegalStateException();
+                        }
+                    } catch (IllegalAccessException | InstantiationException e) {
+                        throw new IllegalStateException();
+                    }
+                }).count();
+        return (T) bean.newInstance();
     }
 
     private <T> void withParameterIllegalState(Class<? super T> resolveClazz, Class<T> beanClazz) {

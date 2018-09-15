@@ -79,7 +79,17 @@ class IoCContextExtendTest {
     //4 test
 
     @Test
+    void should_get_correct_bean() throws IllegalAccessException, InstantiationException {
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        context.registerBean(MyDependency.class);
+        MyBean myBean = context.getBean(MyBean.class);
+        assertEquals(MyBean.class,myBean.getClass());
+    }
+    @Test
     void should_throw_exception_when_dependency_not_instance() {
-        IoCContextImpl<MyBean> context = new IoCContextImpl();
+        IoCContextImpl<MyBean> context = new IoCContextImpl<>();
+        context.registerBean(MyBean.class);
+        assertThrows(IllegalStateException.class, () -> context.getBean(MyBean.class));
     }
 }
