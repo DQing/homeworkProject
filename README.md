@@ -1,3 +1,3 @@
 # homeworkProject
 
-- ./gradle test 运行测试
+- ./gradlew test 运行测试
