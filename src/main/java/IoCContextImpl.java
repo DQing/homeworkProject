@@ -3,14 +3,11 @@ import Annotation.CreateOnTheFly;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class IoCContextImpl<T> implements IoCContext {
-    HashMap<Class,Class> classList = new HashMap<>();
+    LinkedHashMap<Class,Class> classList = new LinkedHashMap<>();
     private List<Object> objectList = new ArrayList<>();
     boolean isCanRegister = false;
 
@@ -107,16 +104,18 @@ public class IoCContextImpl<T> implements IoCContext {
 
     @Override
     public void close() {
-        classList.forEach((key,value)->{
+        Class[] classes = classList.keySet().toArray(new Class[0]);
+        for (int index = classes.length-1; index >= 0; index--) {
+            Class aClass = classes[index];
             try {
+                Class value = classList.get(aClass);
                 Object instance = value.newInstance();
                 objectList.add(instance);
                 Method close = value.getMethod("close");
-                close.setAccessible(true);
                 close.invoke(instance);
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new IllegalStateException();
             }
-        });
+        }
     }
 }

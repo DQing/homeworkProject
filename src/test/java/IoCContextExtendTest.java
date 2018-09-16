@@ -3,6 +3,8 @@ import Entity.Test5Case.Animal;
 import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class IoCContextExtendTest {
@@ -136,9 +138,28 @@ class IoCContextExtendTest {
         IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
         context.registerBean(AutoCloseBean.class);
         context.close();
+        assertEquals(1,context.getObjectList().size());
         context.getObjectList().forEach(instance -> {
             try {
-                assertTrue((Boolean) AutoCloseBean.class.getField("isClose").get(instance));
+                assertTrue((Boolean) instance.getClass().getField("isClose").get(instance));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+    @Test
+    void should_close_reviser_bean_when_register_multipy() {
+        IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
+        context.registerBean(AutoCloseBean.class);
+        context.registerBean(MyNextAutoCloseBean.class);
+        context.close();
+        List<Object> objectList = context.getObjectList();
+        assertEquals(2, objectList.size());
+        assertEquals(objectList.get(0).getClass(),MyNextAutoCloseBean.class);
+        assertEquals(objectList.get(1).getClass(),AutoCloseBean.class);
+        objectList.forEach(instance -> {
+            try {
+                assertTrue((Boolean) instance.getClass().getField("isClose").get(instance));
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
