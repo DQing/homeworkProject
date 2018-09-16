@@ -139,7 +139,6 @@ public class IoCContextImpl<T> implements IoCContext {
             try {
                 Class value = classList.get(aClass);
                 Object instance = value.newInstance();
-                objectList.add(instance);
                 value.getMethod("close").invoke(instance);
             } catch (Throwable throwable) {
                 return throwable;

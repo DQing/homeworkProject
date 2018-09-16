@@ -1,5 +1,6 @@
 import Entity.*;
 import Entity.AutoCloseMethod.AutoCloseBean;
+import Entity.AutoCloseMethod.AutoCloseError;
 import Entity.AutoCloseMethod.AutoCloseThrowError;
 import Entity.AutoCloseMethod.MyNextAutoCloseBean;
 import Entity.Dependency.MyBaseDependency;
@@ -179,5 +180,14 @@ class IoCContextExtendTest {
         context.registerBean(AutoCloseThrowError.class);
         assertThrows(InvocationTargetException.class, context::close);
         assertEquals(IllegalArgumentException.class, context.MySuppressedException.getClass());
+    }
+    @Test
+    void should_close_resource_and_get_first_exception_when_throw_exception() {
+        IoCContextImpl<AutoCloseThrowError> context = new IoCContextImpl<>();
+        context.registerBean(AutoCloseBean.class);
+        context.registerBean(AutoCloseError.class);
+        context.registerBean(AutoCloseThrowError.class);
+        assertThrows(InvocationTargetException.class, context::close);
+        assertEquals(IllegalStateException.class, context.MySuppressedException.getClass());
     }
 }
