@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class IoCContextImpl<T> implements IoCContext {
-    LinkedHashMap<Class,Class> classList = new LinkedHashMap<>();
+    private LinkedHashMap<Class,Class> classList = new LinkedHashMap<>();
     private List<Object> objectList = new ArrayList<>();
-    boolean isCanRegister = false;
+    private boolean isCanRegister = false;
     private Throwable MySuppressedException = null;
 
-    public Throwable getMySuppressedException() {
+    Throwable getMySuppressedException() {
         return MySuppressedException;
     }
 
