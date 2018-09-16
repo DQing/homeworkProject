@@ -123,6 +123,7 @@ class IoCContextExtendTest {
         context.registerBean(MyDependency.class);
         assertThrows(IllegalStateException.class, () -> context.getBean(Cat.class));
     }
+
     @Test
     void should_throw_exception_when_not_instance_bean_dependency() {
         IoCContextImpl<Cat> context = new IoCContextImpl<>();

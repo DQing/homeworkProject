@@ -46,7 +46,7 @@ public class IoCContextImpl<T> implements IoCContext {
     }
 
     private <T> T beanInstance(Class bean) throws IllegalAccessException, InstantiationException {
-        Stream<Field> totalDependency = Stream.concat(Arrays.stream(bean.getFields()),  Arrays.stream(bean.getSuperclass().getFields()));
+        Stream<Field> totalDependency = Stream.concat(Arrays.stream(bean.getDeclaredFields()),  Arrays.stream(bean.getSuperclass().getDeclaredFields()));
           totalDependency.filter(field -> field.getAnnotation(CreateOnTheFly.class) != null)
                 .map(field -> {
                     try {
