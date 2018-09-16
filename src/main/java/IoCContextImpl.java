@@ -12,6 +12,7 @@ public class IoCContextImpl<T> implements IoCContext {
     LinkedHashMap<Class,Class> classList = new LinkedHashMap<>();
     private List<Object> objectList = new ArrayList<>();
     boolean isCanRegister = false;
+    public Throwable MySuppressedException = null;
 
     List<Object> getObjectList() {
         return objectList;
@@ -107,7 +108,7 @@ public class IoCContextImpl<T> implements IoCContext {
     @Override
     public void close() throws Exception {
         Exception myException = null;
-        Throwable throwable = null;
+        Throwable throwable;
         boolean isThrow = false;
         Class[] classes = classList.keySet().toArray(new Class[0]);
         for (int index = classes.length-1; index >= 0; index--) {
@@ -127,6 +128,7 @@ public class IoCContextImpl<T> implements IoCContext {
                     isThrow = true;
                 }
                 if (index==0 && isThrow){
+                    MySuppressedException = myException.getCause();
                     throw myException;
                 }
             }

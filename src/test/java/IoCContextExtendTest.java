@@ -178,5 +178,6 @@ class IoCContextExtendTest {
         context.registerBean(AutoCloseBean.class);
         context.registerBean(AutoCloseThrowError.class);
         assertThrows(InvocationTargetException.class, context::close);
+        assertEquals(IllegalArgumentException.class, context.MySuppressedException.getClass());
     }
 }
