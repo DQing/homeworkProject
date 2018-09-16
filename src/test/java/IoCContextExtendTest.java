@@ -1,4 +1,6 @@
 import Entity.*;
+import Entity.AutoCloseMethod.AutoCloseBean;
+import Entity.AutoCloseMethod.MyNextAutoCloseBean;
 import Entity.Test5Case.Animal;
 import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;

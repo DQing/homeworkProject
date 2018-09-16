@@ -1,4 +1,4 @@
-package Entity;
+package Entity.AutoCloseMethod;
 
 public class MyNextAutoCloseBean implements AutoCloseable {
     public boolean isClose;
