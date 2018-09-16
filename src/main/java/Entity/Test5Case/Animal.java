@@ -1,7 +1,7 @@
 package Entity.Test5Case;
 
 import Annotation.CreateOnTheFly;
-import Entity.MyBaseDependency;
+import Entity.Dependency.MyBaseDependency;
 
 public class Animal {
     @CreateOnTheFly

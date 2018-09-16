@@ -2,6 +2,8 @@ import Entity.*;
 import Entity.AutoCloseMethod.AutoCloseBean;
 import Entity.AutoCloseMethod.AutoCloseThrowError;
 import Entity.AutoCloseMethod.MyNextAutoCloseBean;
+import Entity.Dependency.MyBaseDependency;
+import Entity.Dependency.MyDependency;
 import Entity.Test5Case.Animal;
 import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;

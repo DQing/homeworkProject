@@ -1,4 +1,4 @@
-package Entity;
+package Entity.Dependency;
 
 public class MyDependency {
 }
