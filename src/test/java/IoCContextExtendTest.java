@@ -1,10 +1,12 @@
 import Entity.*;
 import Entity.AutoCloseMethod.AutoCloseBean;
+import Entity.AutoCloseMethod.AutoCloseThrowError;
 import Entity.AutoCloseMethod.MyNextAutoCloseBean;
 import Entity.Test5Case.Animal;
 import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -136,7 +138,7 @@ class IoCContextExtendTest {
     //6 test
 
     @Test
-    void should_close_bean_when_IcoContext_close() {
+    void should_close_bean_when_IcoContext_close() throws Exception {
         IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
         context.registerBean(AutoCloseBean.class);
         context.close();
@@ -150,7 +152,7 @@ class IoCContextExtendTest {
         });
     }
     @Test
-    void should_close_reviser_bean_when_register_multipy() {
+    void should_close_reviser_bean_when_register_multipy() throws Exception {
         IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
         context.registerBean(AutoCloseBean.class);
         context.registerBean(MyNextAutoCloseBean.class);
@@ -166,5 +168,13 @@ class IoCContextExtendTest {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Test
+    void should_close_resource_when_throw_exception() {
+        IoCContextImpl<AutoCloseThrowError> context = new IoCContextImpl<>();
+        context.registerBean(AutoCloseBean.class);
+        context.registerBean(AutoCloseThrowError.class);
+        assertThrows(InvocationTargetException.class, context::close);
     }
 }

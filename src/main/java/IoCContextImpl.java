@@ -103,7 +103,10 @@ public class IoCContextImpl<T> implements IoCContext {
     }
 
     @Override
-    public void close() {
+    public void close() throws Exception {
+        Exception myException = null;
+        Throwable throwable = null;
+        boolean isThrow = false;
         Class[] classes = classList.keySet().toArray(new Class[0]);
         for (int index = classes.length-1; index >= 0; index--) {
             Class aClass = classes[index];
@@ -113,9 +116,31 @@ public class IoCContextImpl<T> implements IoCContext {
                 objectList.add(instance);
                 Method close = value.getMethod("close");
                 close.invoke(instance);
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new IllegalStateException();
+            } catch (Exception e) {
+                myException = e;
+            }finally {
+                throwable = handleCloaseable(aClass);
+                if (throwable != null) {
+                    myException.addSuppressed(throwable);
+                    isThrow = true;
+                }
+                if (index==0 && isThrow){
+                    throw myException;
+                }
             }
         }
+    }
+    Throwable handleCloaseable(Class aClass) {
+        if (aClass != null) {
+            try {
+                Class value = classList.get(aClass);
+                Object instance = value.newInstance();
+                objectList.add(instance);
+                value.getMethod("close").invoke(instance);
+            } catch (Throwable throwable) {
+                return throwable;
+            }
+        }
+        return null;
     }
 }
