@@ -180,7 +180,7 @@ class IoCContextExtendTest {
         context.registerBean(AutoCloseBean.class);
         context.registerBean(AutoCloseThrowError.class);
         assertThrows(InvocationTargetException.class, context::close);
-        assertEquals(IllegalArgumentException.class, context.MySuppressedException.getClass());
+        assertEquals(IllegalArgumentException.class, context.getMySuppressedException().getClass());
     }
     @Test
     void should_close_resource_and_get_first_exception_when_throw_exception() {
@@ -189,6 +189,6 @@ class IoCContextExtendTest {
         context.registerBean(AutoCloseError.class);
         context.registerBean(AutoCloseThrowError.class);
         assertThrows(InvocationTargetException.class, context::close);
-        assertEquals(IllegalStateException.class, context.MySuppressedException.getClass());
+        assertEquals(IllegalStateException.class, context.getMySuppressedException().getClass());
     }
 }

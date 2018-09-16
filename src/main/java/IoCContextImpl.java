@@ -12,7 +12,11 @@ public class IoCContextImpl<T> implements IoCContext {
     LinkedHashMap<Class,Class> classList = new LinkedHashMap<>();
     private List<Object> objectList = new ArrayList<>();
     boolean isCanRegister = false;
-    public Throwable MySuppressedException = null;
+    private Throwable MySuppressedException = null;
+
+    public Throwable getMySuppressedException() {
+        return MySuppressedException;
+    }
 
     List<Object> getObjectList() {
         return objectList;
@@ -46,7 +50,8 @@ public class IoCContextImpl<T> implements IoCContext {
     }
 
     private <T> T beanInstance(Class bean) throws IllegalAccessException, InstantiationException {
-        Stream<Field> totalDependency = Stream.concat(Arrays.stream(bean.getDeclaredFields()),  Arrays.stream(bean.getSuperclass().getDeclaredFields()));
+        Stream<Field> totalDependency = Stream.concat(Arrays.stream(bean.getDeclaredFields()),
+                Arrays.stream(bean.getSuperclass().getDeclaredFields()));
           totalDependency.filter(field -> field.getAnnotation(CreateOnTheFly.class) != null)
                 .map(field -> {
                     try {
