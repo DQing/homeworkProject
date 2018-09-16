@@ -1,20 +1,17 @@
 package Entity;
 
 public class AutoCloseBean implements AutoCloseable {
-    public ClosableStateReference reference;
+    public boolean isClose;
 
     public AutoCloseBean() {
     }
-    public boolean isClosed() {
-        return reference.isClosed();
-    }
 
-    public AutoCloseBean(ClosableStateReference reference) {
-        this.reference = reference;
+    public AutoCloseBean(boolean isClose) {
+        this.isClose = isClose;
     }
 
     @Override
     public void close() {
-        reference.close();
+        isClose = true;
     }
 }

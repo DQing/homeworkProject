@@ -3,13 +3,20 @@ import Annotation.CreateOnTheFly;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class IoCContextImpl<T> implements IoCContext {
     HashMap<Class,Class> classList = new HashMap<>();
+    private List<Object> objectList = new ArrayList<>();
     boolean isCanRegister = false;
+
+    List<Object> getObjectList() {
+        return objectList;
+    }
 
     @Override
     public void registerBean(Class<?> beanClazz) {
@@ -102,9 +109,11 @@ public class IoCContextImpl<T> implements IoCContext {
     public void close() {
         classList.forEach((key,value)->{
             try {
+                Object instance = value.newInstance();
+                objectList.add(instance);
                 Method close = value.getMethod("close");
                 close.setAccessible(true);
-                Object invoke = close.invoke(value.newInstance());
+                close.invoke(instance);
             } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 throw new IllegalStateException();
             }

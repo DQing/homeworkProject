@@ -3,9 +3,7 @@ import Entity.Test5Case.Animal;
 import Entity.Test5Case.Cat;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class IoCContextExtendTest {
     @Test
@@ -137,9 +135,13 @@ class IoCContextExtendTest {
     void should_close_bean_when_IcoContext_close() {
         IoCContextImpl<AutoCloseBean> context = new IoCContextImpl<>();
         context.registerBean(AutoCloseBean.class);
-        ClosableStateReference closableStateReference = new ClosableStateReference(false);
-        AutoCloseBean autoCloseBean = new AutoCloseBean(closableStateReference);
         context.close();
-        assertTrue(autoCloseBean.isClosed());
+        context.getObjectList().forEach(instance -> {
+            try {
+                assertTrue((Boolean) AutoCloseBean.class.getField("isClose").get(instance));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
